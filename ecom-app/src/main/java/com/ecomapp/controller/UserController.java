@@ -33,12 +33,6 @@ public class UserController {
 
     @GetMapping("/getUser")
     public ResponseEntity<?> getUser(@RequestParam long id) {
-//       MyUsers user = myUserService.getUserById(id);
-//       if (user == null) {
-//           return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//       }
-//       return new ResponseEntity<>(user, HttpStatus.OK);
-
         return myUserService.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(()-> ResponseEntity.notFound().build());
@@ -49,8 +43,6 @@ public class UserController {
          MyUsers user = myUserService.updateUser(id, updatedUser);
          return user != null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
-
-
 
 
 }

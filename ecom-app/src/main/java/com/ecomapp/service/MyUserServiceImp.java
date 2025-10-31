@@ -1,5 +1,6 @@
 package com.ecomapp.service;
 
+import com.ecomapp.Repository.MyUserRepository;
 import com.ecomapp.entity.MyUsers;
 import org.springframework.stereotype.Service;
 
@@ -9,60 +10,38 @@ import java.util.Optional;
 
 @Service
 public class MyUserServiceImp implements MyUserService {
+    //    List<MyUsers> users = new ArrayList<>();
+   //    private static long counter = 0;
 
-    List<MyUsers> users = new ArrayList<>();
-    private static long counter = 0;
+    private final MyUserRepository myUserRepository;
 
-
-    public MyUserServiceImp() {
-        MyUsers user1 = new MyUsers("Leo","Messi");
-        user1.setId(++counter);
-        MyUsers user2 = new MyUsers("John","Cena");
-        user2.setId(++counter);
-
-        users.add(user1);
-        users.add(user2);
+    public MyUserServiceImp(MyUserRepository myUserRepository) {
+        this.myUserRepository = myUserRepository;
     }
 
     @Override
     public List<MyUsers> getAllUsers() {
-        return users;
+        return myUserRepository.findAll();
     }
 
     @Override
     public MyUsers createNewUser(MyUsers user) {
-        user.setId(++counter);
-        users.add(user);
-        return user;
+        return myUserRepository.save(user);
     }
 
     @Override
     public Optional<MyUsers> getUserById(long id) {
-        return users
-                .stream()
-                .filter(user -> user.getId() == id)
-                .findFirst();
+        return myUserRepository.findById(id);
     }
 
     @Override
     public MyUsers updateUser(long id, MyUsers user) {
-        return users.stream().filter(u -> u.getId() == id)
-                .findFirst()
+        return myUserRepository.findById(id)
                 .map(existingUser -> {
                     existingUser.setFirstName(user.getFirstName());
                     existingUser.setLastName(user.getLastName());
+                    myUserRepository.save(existingUser);
                     return existingUser;
                 }).orElse(null);
-//        Optional<MyUsers> findUser = users.stream()
-//                .filter(user1 -> user1.getId() == id)
-//                .findFirst();
-//
-//        var upUser = findUser.get();
-//        System.out.println(upUser);
-//
-//        upUser.setFirstName(user.getFirstName());
-//        upUser.setLastName(user.getLastName());
-//
-//        return upUser;
     }
 }
