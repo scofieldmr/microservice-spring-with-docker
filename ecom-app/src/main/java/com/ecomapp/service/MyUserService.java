@@ -1,5 +1,8 @@
 package com.ecomapp.service;
 
+import com.ecomapp.dto.UserCreateRequest;
+import com.ecomapp.dto.UserResponse;
+import com.ecomapp.dto.UserUpdateRequest;
 import com.ecomapp.entity.MyUsers;
 
 import java.util.List;
@@ -7,12 +10,12 @@ import java.util.Optional;
 
 public interface MyUserService {
 
-    List<MyUsers> getAllUsers();
+    List<UserResponse> getAllUsers();
 
-    MyUsers createNewUser(MyUsers user);
+    UserResponse createNewUser(UserCreateRequest userCreateRequest);
 
-    Optional<MyUsers> getUserById(long id);
+    Optional<UserResponse> getUserById(long id);
 
-    MyUsers updateUser(long id, MyUsers user);
+    UserResponse updateUser(long id, UserUpdateRequest userUpdateRequest);
 
 }

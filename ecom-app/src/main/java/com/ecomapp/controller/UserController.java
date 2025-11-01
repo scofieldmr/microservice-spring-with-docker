@@ -1,12 +1,13 @@
 package com.ecomapp.controller;
 
-import com.ecomapp.entity.MyUsers;
+import com.ecomapp.dto.UserCreateRequest;
+import com.ecomapp.dto.UserResponse;
+import com.ecomapp.dto.UserUpdateRequest;
 import com.ecomapp.service.MyUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -21,13 +22,13 @@ public class UserController {
 
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllUsers() {
-         List<MyUsers> users = myUserService.getAllUsers();
+         List<UserResponse> users = myUserService.getAllUsers();
          return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addUser(@RequestBody MyUsers user) {
-        MyUsers newUser = myUserService.createNewUser(user);
+    public ResponseEntity<?> addUser(@RequestBody UserCreateRequest userCreateRequest) {
+        UserResponse newUser = myUserService.createNewUser(userCreateRequest);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
@@ -39,9 +40,9 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable long id, @RequestBody MyUsers updatedUser) {
-         MyUsers user = myUserService.updateUser(id, updatedUser);
-         return user != null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
+    public ResponseEntity<?> updateUser(@PathVariable long id, @RequestBody UserUpdateRequest updatedUser) {
+         UserResponse updateUser = myUserService.updateUser(id, updatedUser);
+         return updateUser != null ? ResponseEntity.ok(updateUser) : ResponseEntity.notFound().build();
     }
 
 
