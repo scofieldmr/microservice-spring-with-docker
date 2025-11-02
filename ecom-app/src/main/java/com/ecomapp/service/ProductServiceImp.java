@@ -77,7 +77,8 @@ public class ProductServiceImp implements ProductService {
     public boolean deleteProductById(long id) {
         Product findProduct = productRepository.findById(id).orElse(null);
         if (findProduct != null) {
-            productRepository.delete(findProduct);
+            findProduct.setActive(false);
+            productRepository.save(findProduct);
             return true;
         }
         return false;
