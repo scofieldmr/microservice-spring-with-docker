@@ -6,6 +6,7 @@ import com.ecomapp.dto.UserResponse;
 import com.ecomapp.dto.UserUpdateRequest;
 import com.ecomapp.entity.Address;
 import com.ecomapp.entity.MyUsers;
+import com.ecomapp.exception.UserNotFoundException;
 import com.ecomapp.mappper.UserMapper;
 import org.springframework.stereotype.Service;
 
@@ -49,7 +50,7 @@ public class MyUserServiceImp implements MyUserService {
          MyUsers user = myUserRepository.findById(id).orElse(null);
 
          if (user == null) {
-             return Optional.empty();
+             throw new UserNotFoundException("User not found with id " + id);
          }
          return Optional.of(userMapper.userToUserResponse(user));
     }
@@ -58,7 +59,7 @@ public class MyUserServiceImp implements MyUserService {
     public UserResponse updateUser(long id, UserUpdateRequest updateUserRequest) {
         MyUsers user = myUserRepository.findById(id).orElse(null);
         if (user == null) {
-            return null;
+            throw new UserNotFoundException("User not found with id " + id);
         }
 
         user.setFirstName(updateUserRequest.getFirstName());

@@ -8,6 +8,9 @@ import com.ecomapp.dto.CartItemResponse;
 import com.ecomapp.entity.CartItem;
 import com.ecomapp.entity.MyUsers;
 import com.ecomapp.entity.Product;
+import com.ecomapp.exception.ProductNotFoundException;
+import com.ecomapp.exception.ProductStockNotAvailableException;
+import com.ecomapp.exception.UserNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -35,14 +38,14 @@ public class CartItemServiceImp implements CartItemService {
                                           CartItemRequest cartItemRequest) {
 
         MyUsers findUser = myUserRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new RuntimeException("User Id not found" + userId));
+                .orElseThrow(() -> new UserNotFoundException("User not found with the ID :" + userId));
 
         Product product = productRepository
                 .findById(cartItemRequest.getProductId())
-                .orElseThrow(() -> new RuntimeException("Product Id not found" + cartItemRequest.getProductId()));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found wuth the ID :" + cartItemRequest.getProductId()));
 
         if(product.getStockQuantity()<cartItemRequest.getQuantity()){
-            throw new RuntimeException("Product Stock Quantity not available for requested item.");
+            throw new ProductStockNotAvailableException("Product Stock Quantity not available for requested product ID :" + cartItemRequest.getProductId());
         }
 
         BigDecimal totalPrice = BigDecimal.valueOf(0);
@@ -54,8 +57,11 @@ public class CartItemServiceImp implements CartItemService {
             existingCartItem.setPrice(totalPrice);
             cartItemRepository.save(existingCartItem);
 
-            return new CartItemResponse(existingCartItem.getId(),existingCartItem.getProduct().getName(),
-                     existingCartItem.getQuantity(),existingCartItem.getPrice());
+            return new CartItemResponse(
+                      existingCartItem.getId(),
+                      existingCartItem.getProduct().getName(),
+                      existingCartItem.getQuantity(),
+                      existingCartItem.getPrice());
         }
 
         CartItem newItem = new CartItem();
@@ -68,7 +74,11 @@ public class CartItemServiceImp implements CartItemService {
 
         CartItem addedItem = cartItemRepository.save(newItem);
 
-        return new CartItemResponse(addedItem.getId(),addedItem.getProduct().getName(),addedItem.getQuantity(),addedItem.getPrice());
+        return new CartItemResponse(
+                 addedItem.getId(),
+                 addedItem.getProduct().getName(),
+                 addedItem.getQuantity(),
+                 addedItem.getPrice());
     }
 
     @Transactional
@@ -76,11 +86,11 @@ public class CartItemServiceImp implements CartItemService {
     public boolean deleteItemFromCart(String userId, Long productId) {
 
         MyUsers findUser = myUserRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new RuntimeException("User Id not found" + userId));
+                .orElseThrow(() -> new UserNotFoundException("User not found with the ID :" + userId));
 
         Product product = productRepository
                 .findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product Id not found" + productId));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with the ID : " + productId));
 
         if(findUser!=null && product!=null){
             cartItemRepository.deleteByUserAndProduct(findUser,product);
@@ -94,7 +104,7 @@ public class CartItemServiceImp implements CartItemService {
     public List<CartItemResponse> getCartItems(String userId) {
 
         MyUsers findUser = myUserRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new RuntimeException("User Id not found" + userId));
+                .orElseThrow(() -> new UserNotFoundException("User not found with the ID :" + userId));
 
         List<CartItem> cartItemsByUser = cartItemRepository.findAllByUser(findUser);
 

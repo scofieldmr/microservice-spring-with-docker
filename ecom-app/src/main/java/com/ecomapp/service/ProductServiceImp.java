@@ -5,6 +5,8 @@ import com.ecomapp.dto.ProductCreateRequest;
 import com.ecomapp.dto.ProductResponse;
 import com.ecomapp.dto.ProductUpdateRequest;
 import com.ecomapp.entity.Product;
+import com.ecomapp.exception.ProductAlreadyExistsException;
+import com.ecomapp.exception.ProductNotFoundException;
 import com.ecomapp.mappper.ProductMapper;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +42,9 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public ProductResponse createNewProduct(ProductCreateRequest newProduct) {
+        if(productRepository.existsByName(newProduct.getName())){
+            throw new ProductAlreadyExistsException("Product already exists with name " + newProduct.getName());
+        }
         Product createProduct = productMapper.productRequestToProduct(newProduct);
         Product savedProduct = productRepository.save(createProduct);
         return productMapper.productToProductResponse(savedProduct);
@@ -59,7 +64,7 @@ public class ProductServiceImp implements ProductService {
     public ProductResponse updateProductDetails(long id, ProductUpdateRequest updateProduct) {
         Product findProduct = productRepository.findById(id).orElse(null);
         if (findProduct == null) {
-            throw new RuntimeException("Product not found with id: " + id);
+            throw new ProductNotFoundException("Product not found with id: " + id);
         }
         findProduct.setName(updateProduct.getName());
         findProduct.setDescription(updateProduct.getDescription());

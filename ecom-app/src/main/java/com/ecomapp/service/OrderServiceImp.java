@@ -11,11 +11,12 @@ import com.ecomapp.entity.CartItem;
 import com.ecomapp.entity.MyUsers;
 import com.ecomapp.entity.Order;
 import com.ecomapp.entity.OrderStatus;
+import com.ecomapp.exception.EmptyCartException;
+import com.ecomapp.exception.UserNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,13 +48,13 @@ public class OrderServiceImp implements OrderService {
 
         //Validate the user
         MyUsers findUser = userRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new RuntimeException("User Not Found with the Id: " + userId));
+                .orElseThrow(() -> new UserNotFoundException("User Not Found with the Id: " + userId));
 
         //validate the cart Items
         List<CartItem> cartItemsByUser = cartItemService.getAllCartItemsByUser(userId);
 
         if(cartItemsByUser.isEmpty()) {
-            throw new RuntimeException("No cart items found for user " + userId);
+            throw new EmptyCartException("No cart items found for user " + userId);
         }
 
         //Calculate the total Price
@@ -101,25 +102,6 @@ public class OrderServiceImp implements OrderService {
                              )).toList(),
                      order.getCreatedAt()
                 );
-
-//        OrderResponse orderResponse = new OrderResponse();
-//        orderResponse.setOrderId(order.getId());
-//        orderResponse.setTotalPrice(order.getTotalPrice());
-//        orderResponse.setOrderStatus(order.getStatus().name());
-//        orderResponse.setCreatedAt(order.getCreatedAt());
-//
-//        List<OrderItemDto> orderItemDtoList = new ArrayList<>();
-//        for(OrderItem orderItem : order.getItems()) {
-//            OrderItemDto orderItemDto = new OrderItemDto();
-//            orderItemDto.setOrderItemId(orderItem.getId());
-//            orderItemDto.setProductId(orderItem.getProduct().getId());
-//            orderItemDto.setQuantity(orderItem.getQuantity());
-//            orderItemDto.setPrice(orderItem.getPrice());
-//            orderItemDtoList.add(orderItemDto);
-//        }
-//        orderResponse.setOrderItems(orderItemDtoList);
-//
-//        return orderResponse;
     }
 
 
