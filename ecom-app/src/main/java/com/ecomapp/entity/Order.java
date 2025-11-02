@@ -1,6 +1,5 @@
 package com.ecomapp.entity;
 
-import com.ecomapp.dto.OrderItem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

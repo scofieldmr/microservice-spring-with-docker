@@ -2,6 +2,7 @@ package com.ecomapp.service;
 
 import com.ecomapp.dto.CartItemRequest;
 import com.ecomapp.dto.CartItemResponse;
+import com.ecomapp.entity.CartItem;
 
 import java.util.List;
 
@@ -14,4 +15,7 @@ public interface CartItemService {
 
     List<CartItemResponse> getCartItems(String userId);
 
+    List<CartItem> getAllCartItemsByUser(String userId);
+
+    void clearCartByUser(String userId);
 }

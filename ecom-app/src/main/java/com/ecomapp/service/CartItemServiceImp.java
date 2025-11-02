@@ -112,5 +112,18 @@ public class CartItemServiceImp implements CartItemService {
         return cartItemResponseList;
     }
 
+    @Override
+    public List<CartItem> getAllCartItemsByUser(String userId) {
+        return myUserRepository.findById(Long.valueOf(userId))
+                .map(cartItemRepository::findAllByUser)
+                .orElseGet(List::of);
+    }
+
+    @Override
+    public void clearCartByUser(String userId) {
+         myUserRepository.findById(Long.valueOf(userId))
+                 .ifPresent(cartItemRepository::deleteByUser);
+    }
+
 
 }

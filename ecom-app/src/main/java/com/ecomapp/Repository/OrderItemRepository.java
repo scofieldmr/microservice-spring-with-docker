@@ -1,6 +1,6 @@
 package com.ecomapp.Repository;
 
-import com.ecomapp.dto.OrderItem;
+import com.ecomapp.entity.OrderItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
