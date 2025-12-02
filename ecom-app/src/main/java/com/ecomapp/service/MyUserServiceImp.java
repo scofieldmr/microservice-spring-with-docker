@@ -65,7 +65,7 @@ public class MyUserServiceImp implements MyUserService {
         user.setFirstName(updateUserRequest.getFirstName());
         user.setLastName(updateUserRequest.getLastName());
         user.setEmail(updateUserRequest.getEmail());
-        user.setEmail(updateUserRequest.getEmail());
+        user.setPhoneNumber(updateUserRequest.getPhoneNumber());
         Address address = user.getAddress();
         if (address != null) {
             address.setCity(updateUserRequest.getAddress().getCity());
