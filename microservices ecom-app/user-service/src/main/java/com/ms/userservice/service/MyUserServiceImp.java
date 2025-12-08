@@ -46,7 +46,7 @@ public class MyUserServiceImp implements MyUserService {
     }
 
     @Override
-    public Optional<UserResponse> getUserById(long id) {
+    public Optional<UserResponse> getUserById(String id) {
          MyUsers user = myUserRepository.findById(id).orElse(null);
 
          if (user == null) {
@@ -56,7 +56,7 @@ public class MyUserServiceImp implements MyUserService {
     }
 
     @Override
-    public UserResponse updateUser(long id, UserUpdateRequest updateUserRequest) {
+    public UserResponse updateUser(String id, UserUpdateRequest updateUserRequest) {
         MyUsers user = myUserRepository.findById(id).orElse(null);
         if (user == null) {
             throw new UserNotFoundException("User not found with id " + id);

@@ -14,8 +14,8 @@ public interface MyUserService {
 
     UserResponse createNewUser(UserCreateRequest userCreateRequest);
 
-    Optional<UserResponse> getUserById(long id);
+    Optional<UserResponse> getUserById(String id);
 
-    UserResponse updateUser(long id, UserUpdateRequest userUpdateRequest);
+    UserResponse updateUser(String id, UserUpdateRequest userUpdateRequest);
 
 }
