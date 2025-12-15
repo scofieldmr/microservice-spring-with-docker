@@ -7,7 +7,22 @@ spring:
     config:
       server:
         native:
-          search-locations: classpath:/config
+          search-locations: file:///D:\Projects\microservice-spring-with-docker\microservices ecom-app\config-service\src\main\resources\config
+  rabbitmq:
+    port: 5672
+    host: localhost
+    username: guest
+    password: guest
 
 server:
   port: 8888
+
+management:
+ endpoints:
+   web:
+     exposure:
+       include: "*"
+ endpoint:
+   health:
+     show-details: always
+
