@@ -54,7 +54,7 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public Optional<ProductResponse> getProductById(long id) {
-        Product findProduct = productRepository.findById(id).orElse(null);
+        Product findProduct = productRepository.findByIdAndActiveTrue(id).orElse(null);
         if (findProduct == null) {
             return Optional.empty();
         }
