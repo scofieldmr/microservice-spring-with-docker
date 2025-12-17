@@ -3,14 +3,18 @@ package com.ms.orderservice.service;
 
 import com.ms.orderservice.client.product.ProductClient;
 import com.ms.orderservice.client.product.ProductResponse;
+import com.ms.orderservice.client.user.UserClient;
+import com.ms.orderservice.client.user.UserResponse;
 import com.ms.orderservice.dto.CartItemRequest;
 import com.ms.orderservice.dto.CartItemResponse;
 import com.ms.orderservice.entity.CartItem;
 import com.ms.orderservice.exception.ProductNotFoundException;
 import com.ms.orderservice.exception.ProductStockNotAvailableException;
+import com.ms.orderservice.exception.UserIdNotFoundException;
 import com.ms.orderservice.repository.CartItemRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -23,17 +27,20 @@ public class CartItemServiceImp implements CartItemService {
 
     private final ProductClient productClient;
 
+    private final UserClient userClient;
 
-    public CartItemServiceImp(CartItemRepository cartItemRepository, ProductClient productClient) {
+
+    public CartItemServiceImp(CartItemRepository cartItemRepository, ProductClient productClient, UserClient userClient) {
         this.cartItemRepository = cartItemRepository;
         this.productClient = productClient;
+        this.userClient = userClient;
     }
 
     @Override
     public CartItemResponse addItemToCart(String userId,
                                           CartItemRequest cartItemRequest) {
 
-        ProductResponse cartProduct = productClient.getProductById(Long.parseLong(cartItemRequest.getProductId()));
+        ProductResponse cartProduct = productClient.getProductById(Long.valueOf(cartItemRequest.getProductId()));
 
         if(cartProduct==null){
             throw new ProductNotFoundException("Product not found in the Product DB");
@@ -42,6 +49,14 @@ public class CartItemServiceImp implements CartItemService {
         if(cartProduct.getStockQuantity()<cartItemRequest.getQuantity()){
             throw  new ProductStockNotAvailableException("Stock Quantity not available in the Product DB");
         }
+
+        UserResponse userDetails = userClient.getUserDetails(userId);
+
+        if(userDetails==null){
+            throw new UserIdNotFoundException("User not found in the User DB");
+        }
+
+        System.out.println("userDetails:"+userDetails);
 
         BigDecimal totalPrice = BigDecimal.valueOf(0);
 
@@ -88,6 +103,13 @@ public class CartItemServiceImp implements CartItemService {
 //                .findById(productId)
 //                .orElseThrow(() -> new ProductNotFoundException("Product not found with the ID : " + productId));
 
+        UserResponse userDetails = userClient.getUserDetails(userId);
+        if(userDetails==null){
+            throw new UserIdNotFoundException("User not found in the User DB");
+        }
+
+        System.out.println("userDetails:"+userDetails);
+
         ProductResponse cartProduct = productClient.getProductById(Long.parseLong(productId));
 
         if(cartProduct==null){
@@ -109,6 +131,13 @@ public class CartItemServiceImp implements CartItemService {
 
 //        MyUsers findUser = myUserRepository.findById(Long.valueOf(userId))
 //                .orElseThrow(() -> new UserNotFoundException("User not found with the ID :" + userId));
+
+        UserResponse userDetails = userClient.getUserDetails(userId);
+        if(userDetails==null){
+            throw new UserIdNotFoundException("User not found in the User DB");
+        }
+
+        System.out.println("userDetails:"+userDetails);
 
         List<CartItem> cartItemsByUser = cartItemRepository.findAllByUserId(userId);
 
@@ -132,7 +161,20 @@ public class CartItemServiceImp implements CartItemService {
 //                .map(cartItemRepository::findAllByUser)
 //                .orElseGet(List::of);
 
-        return  cartItemRepository.findAllByUserId(userId);
+        UserResponse userDetails;
+        try{
+            userDetails = userClient.getUserDetails(userId);
+            if(userDetails==null){
+                throw new UserIdNotFoundException("User not found in the User DB");
+            }
+        }
+        catch(HttpClientErrorException.NotFound ex){
+            throw new UserIdNotFoundException("User not found in the User DB");
+        }
+
+        System.out.println("userDetails:"+userDetails);
+
+        return cartItemRepository.findAllByUserId(userId);
     }
 
     @Override

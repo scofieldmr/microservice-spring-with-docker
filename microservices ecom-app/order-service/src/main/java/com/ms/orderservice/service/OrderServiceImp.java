@@ -1,5 +1,7 @@
 package com.ms.orderservice.service;
 
+import com.ms.orderservice.client.user.UserClient;
+import com.ms.orderservice.client.user.UserResponse;
 import com.ms.orderservice.dto.OrderItemDto;
 import com.ms.orderservice.dto.OrderResponse;
 import com.ms.orderservice.entity.CartItem;
@@ -7,8 +9,7 @@ import com.ms.orderservice.entity.Order;
 import com.ms.orderservice.entity.OrderItem;
 import com.ms.orderservice.entity.OrderStatus;
 import com.ms.orderservice.exception.EmptyCartException;
-import com.ms.orderservice.repository.CartItemRepository;
-import com.ms.orderservice.repository.OrderItemRepository;
+import com.ms.orderservice.exception.UserIdNotFoundException;
 import com.ms.orderservice.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -22,19 +23,17 @@ public class OrderServiceImp implements OrderService {
 
     private final OrderRepository orderRepository;
 
-    private final OrderItemRepository orderItemRepository;
-
-    private final CartItemRepository cartItemRepository;
 
     private final CartItemService cartItemService;
 
+    private final UserClient userClient;
 
-    public OrderServiceImp(OrderRepository orderRepository, OrderItemRepository orderItemRepository,
-                           CartItemRepository cartItemRepository, CartItemService cartItemService) {
+
+    public OrderServiceImp(OrderRepository orderRepository, CartItemService cartItemService, UserClient userClient) {
         this.orderRepository = orderRepository;
-        this.orderItemRepository = orderItemRepository;
-        this.cartItemRepository = cartItemRepository;
+
         this.cartItemService = cartItemService;
+        this.userClient = userClient;
     }
 
     @Transactional
@@ -42,7 +41,11 @@ public class OrderServiceImp implements OrderService {
     public OrderResponse createOrder(String userId) {
 
         //Validate the user
-
+        UserResponse  userDetails = userClient.getUserDetails(userId);
+        if(userDetails==null){
+            throw new UserIdNotFoundException("User not found in the User DB");
+        }
+        System.out.println(userDetails);
 
         //validate the cart Items
         List<CartItem> cartItemsByUser = cartItemService.getAllCartItemsByUser(userId);

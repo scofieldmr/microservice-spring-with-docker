@@ -45,4 +45,12 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(UserIdNotFoundException.class)
+    public ResponseEntity<Map<String,String>> handleUserNotFoundException(UserIdNotFoundException ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", ex.getMessage());
+        return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
+    }
+
+
 }
