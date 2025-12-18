@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @GetMapping("/get/{userId}")
-    public ResponseEntity<?> getUserDetails(@PathVariable("userId") String userId) {
+    public ResponseEntity<UserResponse> getUserDetails(@PathVariable("userId") String userId) {
         return myUserService.getUserById(userId)
                 .map(ResponseEntity::ok)
                 .orElseGet(()-> ResponseEntity.notFound().build());

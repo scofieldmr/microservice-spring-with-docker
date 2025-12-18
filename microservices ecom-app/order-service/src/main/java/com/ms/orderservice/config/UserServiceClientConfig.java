@@ -16,10 +16,7 @@ public class UserServiceClientConfig {
 
     @Bean
     public UserClient userClient(@Qualifier("loadbalancedClientBuilder") RestClient.Builder restClientBuilder) {
-        RestClient restClient = restClientBuilder.baseUrl("http://user-service")
-                .defaultStatusHandler(HttpStatusCode::is4xxClientError,
-                        ((request, response) -> Optional.empty()))
-                .build();
+        RestClient restClient = restClientBuilder.baseUrl("http://user-service").build();
         RestClientAdapter restClientAdapter = RestClientAdapter.create(restClient);
         HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(restClientAdapter).build();
         return httpServiceProxyFactory.createClient(UserClient.class);

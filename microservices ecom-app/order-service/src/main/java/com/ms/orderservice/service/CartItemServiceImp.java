@@ -52,8 +52,8 @@ public class CartItemServiceImp implements CartItemService {
 
         UserResponse userDetails = userClient.getUserDetails(userId);
 
-        if(userDetails==null){
-            throw new UserIdNotFoundException("User not found in the User DB");
+        if (userDetails.getId() == null || userDetails.getEmail() == null ) {
+            throw new UserIdNotFoundException("Uer Id not found in the User DB");
         }
 
         System.out.println("userDetails:"+userDetails);
@@ -104,8 +104,9 @@ public class CartItemServiceImp implements CartItemService {
 //                .orElseThrow(() -> new ProductNotFoundException("Product not found with the ID : " + productId));
 
         UserResponse userDetails = userClient.getUserDetails(userId);
-        if(userDetails==null){
-            throw new UserIdNotFoundException("User not found in the User DB");
+
+        if (userDetails.getId() == null || userDetails.getEmail() == null ) {
+            throw new UserIdNotFoundException("Uer Id not found in the User DB");
         }
 
         System.out.println("userDetails:"+userDetails);
@@ -133,8 +134,9 @@ public class CartItemServiceImp implements CartItemService {
 //                .orElseThrow(() -> new UserNotFoundException("User not found with the ID :" + userId));
 
         UserResponse userDetails = userClient.getUserDetails(userId);
-        if(userDetails==null){
-            throw new UserIdNotFoundException("User not found in the User DB");
+
+        if (userDetails.getId() == null || userDetails.getEmail() == null ) {
+            throw new UserIdNotFoundException("Uer Id not found in the User DB");
         }
 
         System.out.println("userDetails:"+userDetails);
@@ -163,15 +165,12 @@ public class CartItemServiceImp implements CartItemService {
 
         UserResponse userDetails;
         try{
-            userDetails = userClient.getUserDetails(userId);
-            if(userDetails==null){
-                throw new UserIdNotFoundException("User not found in the User DB");
-            }
+            userClient.getUserDetails(userId);
         }
-        catch(HttpClientErrorException.NotFound ex){
-            throw new UserIdNotFoundException("User not found in the User DB");
+        catch (HttpClientErrorException.NotFound e){
+            throw new UserIdNotFoundException("User Id not found in the User DB");
         }
-
+        userDetails = userClient.getUserDetails(userId);
         System.out.println("userDetails:"+userDetails);
 
         return cartItemRepository.findAllByUserId(userId);
