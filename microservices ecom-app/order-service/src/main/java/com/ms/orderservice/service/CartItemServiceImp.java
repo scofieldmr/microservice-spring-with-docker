@@ -13,6 +13,7 @@ import com.ms.orderservice.exception.ProductStockNotAvailableException;
 import com.ms.orderservice.exception.UserIdNotFoundException;
 import com.ms.orderservice.repository.CartItemRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class CartItemServiceImp implements CartItemService {
 
     private final CartItemRepository cartItemRepository;
@@ -84,6 +86,9 @@ public class CartItemServiceImp implements CartItemService {
         newItem.setPrice(totalPrice);
 
         CartItem addedItem = cartItemRepository.save(newItem);
+
+        log.info("User Id: {}",userId);
+        log.info("addedItem: {}",addedItem);
 
         return new CartItemResponse(
                  addedItem.getId(),
