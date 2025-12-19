@@ -37,7 +37,7 @@ eureka:
 #Log-config
 logging:
   file:
-    name: logs/${spring.application.name}
+    name: logs/${spring.application.name}.log
   logback:
     rolling policy:
       max-file-size: 5MB
