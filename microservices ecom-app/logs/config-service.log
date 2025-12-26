@@ -66,3 +66,5 @@
 2025-12-26T19:45:04.834+05:30  INFO 4924 --- [config-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2025-12-26T19:50:04.851+05:30  INFO 4924 --- [config-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2025-12-26T19:55:04.864+05:30  INFO 4924 --- [config-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-26T20:00:04.872+05:30  INFO 4924 --- [config-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-12-26T20:05:04.882+05:30  INFO 4924 --- [config-service] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
